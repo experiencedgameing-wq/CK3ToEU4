@@ -109,7 +109,7 @@ TEST(CK3World_CharactersTests, linkingMissingFaithThrowsException)
 	CK3::Characters characters;
 	characters.loadCharacters(input2);
 
-	ASSERT_THROW(characters.linkFaiths(faiths), std::runtime_error);
+	ASSERT_THROW(characters.linkFaiths(faiths, {}), std::runtime_error);
 }
 
 TEST(CK3World_CharactersTests, housesCanBeLinked)
