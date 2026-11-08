@@ -101,6 +101,7 @@ class World: commonItems::parser
 	Houses houses;
 	Religions religions;
 	Faiths faiths;
+	std::map<long long, long long> riteToFaith;
 	CoatsOfArms coats;
 	LandedTitles landedTitles;
 	Mods mods;
