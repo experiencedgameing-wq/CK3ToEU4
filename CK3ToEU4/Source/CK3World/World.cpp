@@ -213,7 +213,7 @@ void CK3::World::registerKeys(const std::shared_ptr<Configuration>& theConfigura
 		commonItems::parser ritesParser;
 		ritesParser.registerKeyword("database", [this](const std::string& unused, std::istream& databaseStream) {
 			commonItems::parser databaseParser;
-			databaseParser.registerRegex(R"(\\d+)", [this](const std::string& riteID, std::istream& riteStream) {
+			databaseParser.registerRegex(R"(\d+)", [this](const std::string& riteID, std::istream& riteStream) {
 				commonItems::parser riteParser;
 				riteParser.registerKeyword("faith", [this, &riteID](const std::string& unused, std::istream& faithStream) {
 					riteToFaith[std::stoll(riteID)] = commonItems::singleLlong(faithStream).getLlong();
