@@ -23,7 +23,7 @@ class Characters: commonItems::parser
 	[[nodiscard]] const auto& getCharacters() const { return characters; }
 
 	void linkCultures(const Cultures& cultures);
-	void linkFaiths(const Faiths& faiths);
+	void linkFaiths(const Faiths& faiths, const std::map<long long, long long>& riteToFaith);
 	void linkHouses(const Houses& houses);
 	void linkTitles(const Titles& titles);
 	void linkCharacters();
