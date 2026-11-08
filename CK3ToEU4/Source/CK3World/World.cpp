@@ -434,7 +434,7 @@ void CK3::World::crosslinkDatabases()
 	Log(LogLevel::Info) << "-> Loading Cultures into Characters.";
 	characters.linkCultures(cultures);
 	Log(LogLevel::Info) << "-> Loading Faiths into Counties.";
-	countyDetails.linkFaiths(faiths);
+	countyDetails.linkFaiths(faiths, riteToFaith);
 	Log(LogLevel::Info) << "-> Loading Faiths into Characters.";
 	characters.linkFaiths(faiths, riteToFaith);
 	Log(LogLevel::Info) << "-> Loading Faiths into Religions.";
