@@ -201,8 +201,16 @@ void CK3::World::registerKeys(const std::shared_ptr<Configuration>& theConfigura
 	registerKeyword("religion", [this](const std::string& unused, std::istream& theStream) {
 		Log(LogLevel::Info) << "-> Loading religions.";
 		religions = Religions(theStream);
-		faiths = religions.getFaiths(); // Do not access faiths in religions after this - there are none and will crash.
+		// Older CK3 saves nest faiths under religion; CK3 1.20 saves use a top-level faiths database.
+		auto nestedFaiths = religions.getFaiths();
+		if (!nestedFaiths.getFaiths().empty())
+			faiths = std::move(nestedFaiths);
 		Log(LogLevel::Info) << "<> Loaded " << religions.getReligions().size() << " religions and " << faiths.getFaiths().size() << " faiths.";
+	});
+	registerKeyword("faiths", [this](const std::string& unused, std::istream& theStream) {
+		Log(LogLevel::Info) << "-> Loading top-level faith database.";
+		faiths = Faiths(theStream);
+		Log(LogLevel::Info) << "<> Loaded " << faiths.getFaiths().size() << " faiths.";
 	});
 	registerKeyword("coat_of_arms", [this](const std::string& unused, std::istream& theStream) {
 		Log(LogLevel::Info) << "-> Loading garments of limbs.";
