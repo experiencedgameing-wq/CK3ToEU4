@@ -1,0 +1,38 @@
+name: Windows x64 build
+
+on:
+  push:
+    branches:
+      - chatgpt/windows-build-ck3-120-eu4-137
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-2022
+    steps:
+      - name: Check out repository and submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Build converter
+        shell: pwsh
+        run: msbuild CK3ToEU4.sln /m /p:Configuration=Release /p:Platform=x64 /verbosity:minimal
+
+      - name: Upload converter
+        uses: actions/upload-artifact@v4
+        with:
+          name: CK3ToEU4-Windows-x64
+          path: |
+            Release/CK3ToEU4/**
+            Release/CK3ToEU4Converter.exe
+            Release/**
+          if-no-files-found: error
+          retention-days: 14
