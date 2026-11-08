@@ -88,7 +88,7 @@ TEST(CK3World_CharactersTests, faithsCanBeLinked)
 	input2 << "2={faith = 13}\n";
 	CK3::Characters characters;
 	characters.loadCharacters(input2);
-	characters.linkFaiths(faiths);
+	characters.linkFaiths(faiths, {});
 
 	const auto& c1 = characters.getCharacters().find(1);
 	const auto& c2 = characters.getCharacters().find(2);
