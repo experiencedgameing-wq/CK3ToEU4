@@ -27,7 +27,8 @@ void CK3::Character::registerKeys()
 		if (culture->first == 4294967295)
 			culture.reset();
 	});
-	registerKeyword("faith", [this](const std::string& unused, std::istream& theStream) {
+	// CK3 1.20 stores the public faith under "rite"; older saves use "faith".
+	registerRegex("faith|rite", [this](const std::string& unused, std::istream& theStream) {
 		faith = std::pair(commonItems::singleLlong(theStream).getLlong(), nullptr);
 		if (faith->first == 4294967295)
 			faith.reset();
