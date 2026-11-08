@@ -54,7 +54,7 @@ void CK3::Characters::linkCultures(const Cultures& cultures)
 	Log(LogLevel::Info) << "<> " << counter << " characters updated.";
 }
 
-void CK3::Characters::linkFaiths(const Faiths& faiths)
+void CK3::Characters::linkFaiths(const Faiths& faiths, const std::map<long long, long long>& riteToFaith)
 {
 	auto counter = 0;
 	const auto& faithData = faiths.getFaiths();
@@ -65,7 +65,10 @@ void CK3::Characters::linkFaiths(const Faiths& faiths)
 			// We'll sideload this later.
 			continue;
 		}
-		const auto& faithDataItr = faithData.find(character.second->getFaith()->first);
+		const auto riteID = character.second->getFaith()->first;
+		const auto mappedFaith = riteToFaith.find(riteID);
+		const auto faithID = mappedFaith != riteToFaith.end() ? mappedFaith->second : riteID;
+		const auto& faithDataItr = faithData.find(faithID);
 		if (faithDataItr != faithData.end())
 		{
 			character.second->loadFaith(*faithDataItr);
