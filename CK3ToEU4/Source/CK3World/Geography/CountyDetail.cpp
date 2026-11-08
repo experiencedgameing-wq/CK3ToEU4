@@ -20,6 +20,11 @@ void CK3::CountyDetail::registerKeys()
 		if (culture.first == 4294967295)
 			culture.first = 0;
 	});
+	registerKeyword("rite", [this](const std::string& unused, std::istream& theStream) {
+		faith = std::make_pair(commonItems::singleLlong(theStream).getLlong(), nullptr);
+		if (faith.first == 4294967295)
+			faith.first = 0;
+	});
 	registerKeyword("faith", [this](const std::string& unused, std::istream& theStream) {
 		faith = std::make_pair(commonItems::singleLlong(theStream).getLlong(), nullptr);
 		if (faith.first == 4294967295)
