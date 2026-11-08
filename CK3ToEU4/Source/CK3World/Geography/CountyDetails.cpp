@@ -47,13 +47,16 @@ void CK3::CountyDetails::linkCultures(const Cultures& cultures)
 	Log(LogLevel::Info) << "<> " << counter << " counties updated.";
 }
 
-void CK3::CountyDetails::linkFaiths(const Faiths& faiths)
+void CK3::CountyDetails::linkFaiths(const Faiths& faiths, const std::map<long long, long long>& riteToFaith)
 {
 	auto counter = 0;
 	const auto& faithData = faiths.getFaiths();
 	for (const auto& countyDetail: countyDetails)
 	{
-		const auto& faithDataItr = faithData.find(countyDetail.second->getFaith().first);
+		const auto riteID = countyDetail.second->getFaith().first;
+		const auto mappedFaith = riteToFaith.find(riteID);
+		const auto faithID = mappedFaith != riteToFaith.end() ? mappedFaith->second : riteID;
+		const auto& faithDataItr = faithData.find(faithID);
 		if (faithDataItr != faithData.end())
 		{
 			countyDetail.second->loadFaith(*faithDataItr);
