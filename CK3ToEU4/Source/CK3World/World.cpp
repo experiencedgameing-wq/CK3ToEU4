@@ -207,6 +207,27 @@ void CK3::World::registerKeys(const std::shared_ptr<Configuration>& theConfigura
 			faiths = std::move(nestedFaiths);
 		Log(LogLevel::Info) << "<> Loaded " << religions.getReligions().size() << " religions and " << faiths.getFaiths().size() << " faiths.";
 	});
+	// CK3 1.20 characters reference rites rather than faith IDs.
+	// Resolve each rite to its underlying faith before crosslinking characters.
+	registerKeyword("rites", [this](const std::string& unused, std::istream& theStream) {
+		commonItems::parser ritesParser;
+		ritesParser.registerKeyword("database", [this](const std::string& unused, std::istream& databaseStream) {
+			commonItems::parser databaseParser;
+			databaseParser.registerRegex(R"(\\d+)", [this](const std::string& riteID, std::istream& riteStream) {
+				commonItems::parser riteParser;
+				riteParser.registerKeyword("faith", [this, &riteID](const std::string& unused, std::istream& faithStream) {
+					riteToFaith[std::stoll(riteID)] = commonItems::singleLlong(faithStream).getLlong();
+				});
+				riteParser.registerRegex(commonItems::catchallRegex, commonItems::ignoreItem);
+				riteParser.parseStream(riteStream);
+			});
+			databaseParser.registerRegex(commonItems::catchallRegex, commonItems::ignoreItem);
+			databaseParser.parseStream(databaseStream);
+		});
+		ritesParser.registerRegex(commonItems::catchallRegex, commonItems::ignoreItem);
+		ritesParser.parseStream(theStream);
+		Log(LogLevel::Info) << "<> Loaded " << riteToFaith.size() << " rite-to-faith links.";
+	});
 	registerKeyword("faiths", [this](const std::string& unused, std::istream& theStream) {
 		Log(LogLevel::Info) << "-> Loading top-level faith database.";
 		faiths = Faiths(theStream);
@@ -415,7 +436,7 @@ void CK3::World::crosslinkDatabases()
 	Log(LogLevel::Info) << "-> Loading Faiths into Counties.";
 	countyDetails.linkFaiths(faiths);
 	Log(LogLevel::Info) << "-> Loading Faiths into Characters.";
-	characters.linkFaiths(faiths);
+	characters.linkFaiths(faiths, riteToFaith);
 	Log(LogLevel::Info) << "-> Loading Faiths into Religions.";
 	religions.linkFaiths(faiths);
 	Log(LogLevel::Info) << "-> Loading Religions into Faiths.";
