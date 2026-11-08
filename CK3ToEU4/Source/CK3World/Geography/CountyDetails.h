@@ -16,7 +16,7 @@ class CountyDetails: commonItems::parser
 	[[nodiscard]] const auto& getCountyDetails() const { return countyDetails; }
 
 	void linkCultures(const Cultures& cultures);
-	void linkFaiths(const Faiths& faiths);
+	void linkFaiths(const Faiths& faiths, const std::map<long long, long long>& riteToFaith);
 
   private:
 	void registerKeys();
